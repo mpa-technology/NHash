@@ -48,7 +48,6 @@ int main(int argc, char *argv[])
 
 
 
-    qRegisterMetaType<HashResult>();
 
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,

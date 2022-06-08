@@ -23,13 +23,20 @@
 
 #include "BackEnd.hpp"
 
+
+
+
+
+
 BackEnd::BackEnd(QObject *parent) : QObject(parent)
 {
 
 }
 
+QString BackEnd::calculateHash(const QUrl fileUrl, const BackEnd::HashType hashType){
 
-HashResult BackEnd::calculateHash(const QUrl fileUrl){
+    QCryptographicHash hash( static_cast<QCryptographicHash::Algorithm>( hashType ));
+
 
     const auto filePath = fileUrl.toLocalFile();
 
@@ -37,22 +44,26 @@ HashResult BackEnd::calculateHash(const QUrl fileUrl){
 
 
 
-    if( not file.open( QFile::ReadOnly ) ){
-       qjsEngine(this)->throwError(tr("Error open file: ") + file.errorString() );
-    }
+        if( not file.open( QFile::ReadOnly ) ){
+           qjsEngine(this)->throwError(tr("Error open file: ") + file.errorString() );
+        }
 
-    HashCalc hashCalc;
-    while(!file.atEnd())
-    {
+        while(!file.atEnd())
+        {
 
-      const auto fileData = file.read( 1024 );
+          const auto fileData = file.read( 1024 );
 
-      hashCalc.addData( fileData );
+          hash.addData( fileData );
 
 
-    }
+        }
 
-    file.close();
+        file.close();
 
-    return hashCalc.getResult();
+
+
+
+        return hash.result().toHex();
 }
+
+

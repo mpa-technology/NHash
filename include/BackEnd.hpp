@@ -26,23 +26,43 @@
 #include <QObject>
 #include <QUrl>
 #include <QFile>
-
 #include <QJSEngine>
+#include <QDebug>
 
-
-#include "HashCalc.hpp"
-
+#include <QCryptographicHash>
 
 
 class BackEnd : public QObject
 {
     Q_OBJECT
 public:
+
+
+    enum HashType{
+        MD5 = QCryptographicHash::Md5,
+        MD4 = QCryptographicHash::Md4,
+        SHA1= QCryptographicHash::Sha1,
+        SHA224 = QCryptographicHash::Sha224,
+        SHA256 = QCryptographicHash::Sha256,
+        SHA384 = QCryptographicHash::Sha384,
+        SHA512 = QCryptographicHash::Sha512,
+        KECCAK_224 = QCryptographicHash::Keccak_224,
+        KECCAK_256 = QCryptographicHash::Keccak_256,
+        KECCAK_384 = QCryptographicHash::Keccak_384,
+        KECCAK_512 = QCryptographicHash::Keccak_512
+
+    };
+
+
+
+    Q_ENUM(HashType)
+
+
     explicit BackEnd(QObject *parent = nullptr);
 
 
     Q_INVOKABLE
-    HashResult calculateHash(const QUrl fileUrl);
+    QString calculateHash(const QUrl fileUrl, const HashType hashType);
 
 signals:
 

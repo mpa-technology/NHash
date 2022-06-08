@@ -47,16 +47,53 @@ Window {
 
     }
 
-    function calculateHash(fileUrl){
+    function calculateHashFromFile(fileUrl){
 
         try {
 
-            var hash =  backend.calculateHash(fileUrl);
-            console.log(hash.md5);
-            console.log(hash.sha512);
+            var currentHash = hashComboBox.currentValue;
+            var hash = -1;
 
-            md5TextField.text = hash.md5;
-            sha512TextField.text = hash.sha512;
+
+            if(currentHash === "MD5"){
+                hash = backend.calculateHash(fileUrl, backend.MD5);
+            }else if(currentHash === "MD4"){
+                hash = backend.calculateHash(fileUrl, backend.MD4);
+            }
+            else if(currentHash === "SHA1"){
+                hash = backend.calculateHash(fileUrl, backend.SHA1);
+            }
+            else if(currentHash === "SHA224"){
+                hash = backend.calculateHash(fileUrl, backend.SHA224);
+            }
+            else if(currentHash === "SHA256" ){
+                hash = backend.calculateHash(fileUrl, backend.SHA256);
+            }
+            else if( currentHash === "SHA384"){
+                hash = backend.calculateHash(fileUrl, backend.SHA384);
+            }
+            else if( currentHash === "SHA512"){
+                hash = backend.calculateHash(fileUrl, backend.SHA512);
+            }
+            else if( currentHash === "KECCAK_224"){
+                hash = backend.calculateHash(fileUrl, backend.KECCAK_224);
+            }
+            else if( currentHash === "KECCAK_256"){
+                hash = backend.calculateHash(fileUrl, backend.KECCAK_256);
+            }
+            else if( currentHash === "KECCAK_384"){
+                hash = backend.calculateHash(fileUrl, backend.KECCAK_384);
+            }else if( currentHash === "KECCAK_512"){
+                hash = backend.calculateHash(fileUrl, backend.KECCAK_512);
+            }
+            else{
+                throw "Error hash type";
+            }
+
+            console.log("hash: ", hash);
+
+            generatedHashTextField.text = hash;
+
 
         }catch( error ){
             showError(error);
@@ -70,7 +107,7 @@ Window {
         id: selectFileDialog
 
         onAccepted : {
-            calculateHash(selectFileDialog.fileUrl);
+            calculateHashFromFile( selectFileDialog.fileUrl,  )
         }
 
     }
@@ -79,54 +116,40 @@ Window {
     ColumnLayout {
         id: column
         anchors.fill: parent
-        spacing: 4
+        spacing: -243.4
 
-
-
-        TextField {
-            id: md5TextField
-            Layout.rightMargin: 10
-            Layout.leftMargin: 10
-            Layout.margins: 0
+        ComboBox {
+            id: hashComboBox
+            Layout.margins: 15
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-
-
-            placeholderText: "MD5"
-            readOnly: true
+            model: ["MD5","MD4","SHA1","SHA224","SHA256","SHA384","SHA512","KECCAK_224","KECCAK_256","KECCAK_384","KECCAK_512"]
         }
 
         TextField {
-            id: sha512TextField
-            Layout.rightMargin: 10
-            Layout.leftMargin: 10
-            Layout.margins: 0
+            id: generatedHashTextField
+            Layout.margins: 15
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-
-
-            placeholderText: "SHA512"
+            placeholderText: qsTr("Generated hash")
             readOnly: true
         }
 
-
-
-        Button{
-            id: selectFileButton
-
-            text: qsTr("select file")
-            Layout.rightMargin: 10
-            Layout.leftMargin: 10
-            Layout.fillHeight: false
+        Button {
+            id: fileOpenButton
+            text: qsTr("From file")
+            Layout.margins: 15
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-
             onClicked: {
-
                 selectFileDialog.visible = true;
-
             }
         }
+
+
+
+
+
 
 
 
@@ -135,3 +158,5 @@ Window {
 
 
 }
+
+

@@ -33,13 +33,8 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick LinguistTools REQUIRED)
 set(PROJECT_SOURCES
         src/main.cpp
         src/BackEnd.cpp
-        src/HashResult.cpp
-        src/HashCalc.cpp
 
         include/BackEnd.hpp
-        include/HashResult.hpp
-        include/HashCalc.hpp
-
 
         qml.qrc
 )
