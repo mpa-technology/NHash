@@ -39,58 +39,31 @@ Window {
         title: qsTr("Error")
     }
 
+    FileDialog  {
+        id: selectFileDialog
+
+        onAccepted : {
+            calculateHashFromFile( selectFileDialog.fileUrl );
+        }
+
+    }
+
 
     function showError(error){
 
-        errorMessageDialog.text = error;
+        errorMessageDialog.text = error.toString();
         errorMessageDialog.visible = true;
 
     }
 
-    function calculateHashFromFile(fileUrl){
 
-        try {
-
+    function calculateHash(){
+        try{
             var currentHash = hashComboBox.currentValue;
-            var hash = -1;
+            var hashType = backend.stringToHashType(currentHash)
+            var hash = backend.calculateHash( hashType );
 
-
-            if(currentHash === "MD5"){
-                hash = backend.calculateHash(fileUrl, backend.MD5);
-            }else if(currentHash === "MD4"){
-                hash = backend.calculateHash(fileUrl, backend.MD4);
-            }
-            else if(currentHash === "SHA1"){
-                hash = backend.calculateHash(fileUrl, backend.SHA1);
-            }
-            else if(currentHash === "SHA224"){
-                hash = backend.calculateHash(fileUrl, backend.SHA224);
-            }
-            else if(currentHash === "SHA256" ){
-                hash = backend.calculateHash(fileUrl, backend.SHA256);
-            }
-            else if( currentHash === "SHA384"){
-                hash = backend.calculateHash(fileUrl, backend.SHA384);
-            }
-            else if( currentHash === "SHA512"){
-                hash = backend.calculateHash(fileUrl, backend.SHA512);
-            }
-            else if( currentHash === "KECCAK_224"){
-                hash = backend.calculateHash(fileUrl, backend.KECCAK_224);
-            }
-            else if( currentHash === "KECCAK_256"){
-                hash = backend.calculateHash(fileUrl, backend.KECCAK_256);
-            }
-            else if( currentHash === "KECCAK_384"){
-                hash = backend.calculateHash(fileUrl, backend.KECCAK_384);
-            }else if( currentHash === "KECCAK_512"){
-                hash = backend.calculateHash(fileUrl, backend.KECCAK_512);
-            }
-            else{
-                throw "Error hash type";
-            }
-
-            console.log("hash: ", hash);
+            console.log("hash "+ currentHash + " : ", hash);
 
             generatedHashTextField.text = hash;
 
@@ -102,15 +75,22 @@ Window {
         }
     }
 
+    function calculateHashFromFile(fileUrl){
 
-    FileDialog  {
-        id: selectFileDialog
 
-        onAccepted : {
-            calculateHashFromFile( selectFileDialog.fileUrl,  )
-        }
+        backend.currentFile = fileUrl;
+        calculateHash();
 
     }
+
+    function reCalculateHash(){
+
+        if( backend.currentFile.length !== 0 ){
+            calculateHash();
+        }
+    }
+
+
 
 
     ColumnLayout {
@@ -124,6 +104,9 @@ Window {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             model: ["MD5","MD4","SHA1","SHA224","SHA256","SHA384","SHA512","KECCAK_224","KECCAK_256","KECCAK_384","KECCAK_512"]
+            onActivated: {
+                reCalculateHash();
+            }
         }
 
         TextField {

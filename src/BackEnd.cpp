@@ -33,37 +33,85 @@ BackEnd::BackEnd(QObject *parent) : QObject(parent)
 
 }
 
-QString BackEnd::calculateHash(const QUrl fileUrl, const BackEnd::HashType hashType){
+QString BackEnd::calculateHash(const BackEnd::HashType hashType){
 
     QCryptographicHash hash( static_cast<QCryptographicHash::Algorithm>( hashType ));
 
 
-    const auto filePath = fileUrl.toLocalFile();
-
-    QFile file( filePath );
+    QFile file( _currentFile );
 
 
 
-        if( not file.open( QFile::ReadOnly ) ){
-           qjsEngine(this)->throwError(tr("Error open file: ") + file.errorString() );
-        }
+    if( not file.open( QFile::ReadOnly ) ){
+        qjsEngine(this)->throwError(tr("Error open file: ") + file.errorString() );
+    }
 
-        while(!file.atEnd())
-        {
+    while(!file.atEnd())
+    {
 
-          const auto fileData = file.read( 1024 );
+        const auto fileData = file.read( 1024 );
 
-          hash.addData( fileData );
+        hash.addData( fileData );
 
 
-        }
+    }
 
-        file.close();
+    file.close();
 
 
 
 
-        return hash.result().toHex();
+    return hash.result().toHex();
 }
+
+
+BackEnd::HashType BackEnd::stringToHashType(const QString string){
+
+
+    if(string == "MD5"){
+        return MD5;
+    }else if(string == "MD4"){
+        return MD4;
+    }
+    else if(string == "SHA1"){
+        return SHA1;
+    }
+    else if(string == "SHA224"){
+        return SHA224;
+    }
+    else if(string == "SHA256" ){
+        return SHA256;
+    }
+    else if( string == "SHA384"){
+        return SHA384;
+    }
+    else if( string == "SHA512"){
+        return SHA512;
+    }
+    else if( string == "KECCAK_224"){
+        return KECCAK_224;
+    }
+    else if( string == "KECCAK_256"){
+        return KECCAK_256;
+    }
+    else if( string == "KECCAK_384"){
+        return KECCAK_384;
+    }else if( string == "KECCAK_512"){
+        return KECCAK_512;
+    }
+
+
+    qjsEngine(this)->throwError(tr("error hash string ") );
+
+    return {};
+}
+
+
+
+QString BackEnd::currentFile(){
+    return _currentFile;
+}
+
+
 
 

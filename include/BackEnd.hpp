@@ -35,6 +35,9 @@
 class BackEnd : public QObject
 {
     Q_OBJECT
+
+
+    Q_PROPERTY(QString currentFile READ currentFile WRITE setFile )
 public:
 
 
@@ -53,18 +56,33 @@ public:
 
     };
 
-
-
     Q_ENUM(HashType)
+
+
 
 
     explicit BackEnd(QObject *parent = nullptr);
 
 
     Q_INVOKABLE
-    QString calculateHash(const QUrl fileUrl, const HashType hashType);
+    QString calculateHash(const HashType hashType);
+
+
+    Q_INVOKABLE
+    HashType stringToHashType(const QString string);
+
+
+
+    QString currentFile();
+
+    void setFile(const QUrl &fileUrl){
+    _currentFile = fileUrl.toLocalFile();
+    }
 
 signals:
+
+private:
+    QString _currentFile;
 
 };
 
